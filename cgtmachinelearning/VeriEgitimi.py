@@ -5,10 +5,10 @@ from sklearn.preprocessing import MinMaxScaler
 from keras.models import Sequential
 from keras.layers import LSTM, Dense
 from sklearn.metrics import r2_score
-
+from sklearn.model_selection import train_test_split
 
 # Veriyi yükleme ve gereksiz sütunları kaldırma
-data = pd.read_excel("data1.xlsx")
+data = pd.read_excel("yeni_data.xlsx")
 data = data.drop(["id", "temp", "w_status"], axis=1)
 
 # 'date' sütununu datetime formatına çevirme
@@ -44,28 +44,22 @@ window_size = 10
 # Giriş ve hedef verilerini oluşturma
 X, y = create_time_series_data(data_scaled, window_size)
 
+# Veriyi eğitim ve test setlerine ayırma
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
+
 # Modeli oluşturma
 model = Sequential()
-
-# Birinci LSTM katmanı
-model.add(LSTM(units=50, activation='relu', return_sequences=True, input_shape=(X.shape[1], X.shape[2])))
-
-# İkinci LSTM katmanı
+model.add(LSTM(units=50, activation='relu', return_sequences=True, input_shape=(X_train.shape[1], X_train.shape[2])))
 model.add(LSTM(units=50, activation='relu', return_sequences=True))
-
-# Üçüncü LSTM katmanı
 model.add(LSTM(units=50, activation='relu'))
-
-# Çıkış katmanı
 model.add(Dense(units=1))
-
-# Modeli derleme
 model.compile(optimizer='adam', loss='mean_squared_error')
 
 # Modeli eğitme
-model.fit(X, y, epochs=50, batch_size=32)
+model.fit(X_train, y_train, epochs=50, batch_size=64, validation_data=(X_test, y_test))
 
-predictions = model.predict(X)
-r2 = r2_score(y, predictions)
+# Test seti üzerinde tahmin yapma
+test_predictions = model.predict(X_test)
+r2_test = r2_score(y_test, test_predictions)
 
-print(f'Modelin R-kare skoru: {r2}')
+print(f'Modelin Test R-kare skoru: {r2_test}')
