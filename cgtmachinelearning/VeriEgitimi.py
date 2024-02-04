@@ -63,3 +63,4 @@ test_predictions = model.predict(X_test)
 r2_test = r2_score(y_test, test_predictions)
 
 print(f'Modelin Test R-kare skoru: {r2_test}')
+# deneme 
