@@ -1,13 +1,11 @@
-from sklearn.metrics import confusion_matrix
+import seaborn as sns
+import matplotlib.pyplot as plt
 
-# Tahminleri sınıflara dönüştürme (örneğin, eşik değeri 0.5 kullanarak)
-predicted_classes = (test_predictions > 0.5).astype(int)
-
-# Gerçek sınıfları almak için eşik değeri belirleyin (örneğin, 0.5)
-true_classes = (y_test > 0.5).astype(int)
-
-# Konfüzyon matrisini oluşturun
-conf_matrix = confusion_matrix(true_classes, predicted_classes)
-
-print("Confusion Matrix:")
-print(conf_matrix)
+# Konfüzyon matrisini görselleştirme
+plt.figure(figsize=(6, 6))
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', cbar=False,
+            xticklabels=['Negatif', 'Pozitif'], yticklabels=['Negatif', 'Pozitif'])
+plt.title('Konfüzyon Matrisi')
+plt.xlabel('Tahmin Edilen Sınıf')
+plt.ylabel('Gerçek Sınıf')
+plt.show()
