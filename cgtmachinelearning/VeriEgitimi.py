@@ -58,6 +58,9 @@ model.compile(optimizer='adam', loss='mean_squared_error')
 # Modeli eğitme
 model.fit(X_train, y_train, epochs=50, batch_size=64, validation_data=(X_test, y_test))
 
+#MODEL KAYDETME
+model.save('model_keras.h5')
+
 # Test seti üzerinde tahmin yapma
 test_predictions = model.predict(X_test)
 r2_test = r2_score(y_test, test_predictions)
