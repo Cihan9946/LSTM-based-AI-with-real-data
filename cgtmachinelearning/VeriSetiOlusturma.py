@@ -1,21 +1,21 @@
-# Kullanıcıdan giriş verisini al
-reg_value = float(input("Lütfen reg değerini girin: "))
-power_value = float(input("Lütfen power değerini girin:"))
+import pandas as pd
 
-# Kullanıcının girdiği değerleri eğitim verileri üzerinde yapılan ölçeklendirmeye tabi tutma
-input_data = scaler.transform(np.array([[0, reg_value, power_value, 0]]))
+# Excel dosyasını oku
+df = pd.read_excel('veri.xlsx')
 
-# Daha önce belirlenen pencere boyutu kadar veri al
-input_sequence = data_scaled[-window_size:, :]
+# data_v kolonuna göre duplikatları kaldır
+unique_values = set()
+duplicates_indices = []
 
-# Kullanıcının girdiği değeri pencereye ekle
-input_sequence[:, 1:3] = input_data[:, 1:3]
+for index, row in df.iterrows():
+    data_v_value = row['date_v']
+    if data_v_value in unique_values:
+        duplicates_indices.append(index)
+    else:
+        unique_values.add(data_v_value)
 
-# Tahmin yapma
-input_sequence = input_sequence.reshape((1, window_size, input_sequence.shape[1]))
-predicted_yukh = model.predict(input_sequence)
+# Duplikat satırları sil
+df = df.drop(index=duplicates_indices)
 
-# Tahmin edilen 'yukh' değerini ölçeklendirmeyi tersine çevirme
-predicted_yukh = scaler.inverse_transform(np.array([[0, predicted_yukh[0, 0], 0, 0]]))[0, 1]
-
-print(f"Tahmin edilen yukh değeri: {predicted_yukh}")
+# Sonucu yeni bir Excel dosyasına yaz
+df.to_excel('yeni_data.xlsx', index=False)
