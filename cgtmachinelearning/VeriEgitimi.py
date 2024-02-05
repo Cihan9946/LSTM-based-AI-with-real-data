@@ -59,7 +59,7 @@ model.compile(optimizer='adam', loss='mean_squared_error')
 model.fit(X_train, y_train, epochs=50, batch_size=64, validation_data=(X_test, y_test))
 
 #MODEL KAYDETME
-model.save('model_keras.h5')
+model.save('cgt_model.h5')
 
 # Test seti üzerinde tahmin yapma
 test_predictions = model.predict(X_test)
