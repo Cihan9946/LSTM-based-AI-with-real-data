@@ -1,1 +1,1 @@
-# Cgt_IA
+#LSTM-based-AI-with-real-data
